@@ -16,6 +16,11 @@ export const TYPES = {
   PreferenceService: Symbol.for('PreferenceService'),
   KafkaEventHandler: Symbol.for('KafkaEventHandler'),
 
+  // Workers
+  EmailWorker: Symbol.for('EmailWorker'),
+  PushWorker: Symbol.for('PushWorker'),
+  SmsWorker: Symbol.for('SmsWorker'),
+
   // API Controllers
   NotificationController: Symbol.for('NotificationController'),
   TemplateController: Symbol.for('TemplateController'),

@@ -27,6 +27,10 @@ export class KafkaEventHandler {
     });
   }
 
+  async stop(): Promise<void> {
+    await this.consumer.disconnect();
+  }
+
   private async handleEvent(topic: string, event: Record<string, unknown>): Promise<void> {
     this.logger.info(`Received event on topic ${topic}`, { eventType: event.type });
 

@@ -19,6 +19,11 @@ import { TemplateService } from '../application/services/template.service';
 import { PreferenceService } from '../application/services/preference.service';
 import { KafkaEventHandler } from '../application/events/kafka.handler';
 
+// Workers
+import { EmailWorker } from '../workers/email.worker';
+import { PushWorker } from '../workers/push.worker';
+import { SmsWorker } from '../workers/sms.worker';
+
 // API Controllers
 import { NotificationController } from '../api/controllers/notification.controller';
 import { TemplateController } from '../api/controllers/template.controller';
@@ -52,6 +57,11 @@ container.bind(TYPES.NotificationService).to(NotificationService).inSingletonSco
 container.bind(TYPES.TemplateService).to(TemplateService).inSingletonScope();
 container.bind(TYPES.PreferenceService).to(PreferenceService).inSingletonScope();
 container.bind(TYPES.KafkaEventHandler).to(KafkaEventHandler).inSingletonScope();
+
+// ── Bind Workers ────────────────────────────────────────────────────────────
+container.bind(TYPES.EmailWorker).to(EmailWorker).inSingletonScope();
+container.bind(TYPES.PushWorker).to(PushWorker).inSingletonScope();
+container.bind(TYPES.SmsWorker).to(SmsWorker).inSingletonScope();
 
 // ── Bind API Controllers ────────────────────────────────────────────────────
 container.bind(TYPES.NotificationController).to(NotificationController).inSingletonScope();
