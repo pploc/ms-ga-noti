@@ -1,4 +1,5 @@
 node_modules/
 dist/
+src/domain/types/api.generated.ts
 coverage/
 *.md
