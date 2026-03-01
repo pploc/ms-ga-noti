@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { createApp } from './app';
 import { config } from './config';
 import { connectMongoDB, disconnectMongoDB } from './infrastructure/database/connection';
