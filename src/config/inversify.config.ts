@@ -9,6 +9,16 @@ import { NotificationRepository } from '../infrastructure/repositories/notificat
 import { TemplateRepository } from '../infrastructure/repositories/template.repository';
 import { PreferenceRepository } from '../infrastructure/repositories/preference.repository';
 
+// Messaging
+import { KafkaConsumer } from '../infrastructure/messaging/kafka.consumer';
+import { RabbitMQPublisher } from '../infrastructure/messaging/rabbitmq.publisher';
+
+// Application Services
+import { NotificationService } from '../application/services/notification.service';
+import { TemplateService } from '../application/services/template.service';
+import { PreferenceService } from '../application/services/preference.service';
+import { KafkaEventHandler } from '../application/events/kafka.handler';
+
 const container = new Container();
 
 // ── Bind Shared ─────────────────────────────────────────────────────────────
@@ -29,7 +39,13 @@ container
   .to(PreferenceRepository)
   .inSingletonScope();
 
+container.bind(TYPES.KafkaConsumer).to(KafkaConsumer).inSingletonScope();
+container.bind(TYPES.RabbitMQPublisher).to(RabbitMQPublisher).inSingletonScope();
+
 // ── Bind Application ────────────────────────────────────────────────────────
-// (To be added as we implement them)
+container.bind(TYPES.NotificationService).to(NotificationService).inSingletonScope();
+container.bind(TYPES.TemplateService).to(TemplateService).inSingletonScope();
+container.bind(TYPES.PreferenceService).to(PreferenceService).inSingletonScope();
+container.bind(TYPES.KafkaEventHandler).to(KafkaEventHandler).inSingletonScope();
 
 export { container };
