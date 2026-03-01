@@ -4,492 +4,464 @@
  */
 
 export interface paths {
-    "/send": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Send a notification
-         * @description Manually trigger a notification to a specific customer using a template.
-         */
-        post: operations["sendNotification"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  '/send': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List notifications
-         * @description Get a paginated list of notifications, filterable by customer, status, or channel.
-         */
-        get: operations["listNotifications"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * Send a notification
+     * @description Manually trigger a notification to a specific customer using a template.
+     */
+    post: operations['sendNotification'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/{id}/read": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Mark notification as read */
-        put: operations["markAsRead"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * List notifications
+     * @description Get a paginated list of notifications, filterable by customer, status, or channel.
+     */
+    get: operations['listNotifications'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/{id}/read': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/preferences/{customerId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get user preferences */
-        get: operations["getPreferences"];
-        /** Update user preferences */
-        put: operations["updatePreferences"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    /** Mark notification as read */
+    put: operations['markAsRead'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/preferences/{customerId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/templates": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List templates */
-        get: operations["listTemplates"];
-        put?: never;
-        /** Create template */
-        post: operations["createTemplate"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get user preferences */
+    get: operations['getPreferences'];
+    /** Update user preferences */
+    put: operations['updatePreferences'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/templates': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/templates/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Update template */
-        put: operations["updateTemplate"];
-        post?: never;
-        /** Delete template */
-        delete: operations["deleteTemplate"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** List templates */
+    get: operations['listTemplates'];
+    put?: never;
+    /** Create template */
+    post: operations['createTemplate'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/templates/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    get?: never;
+    /** Update template */
+    put: operations['updateTemplate'];
+    post?: never;
+    /** Delete template */
+    delete: operations['deleteTemplate'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        Error: {
-            /** @example error */
-            status?: string;
-            /** @example Detailed error message */
-            message?: string;
-        };
-        /** @enum {string} */
-        NotificationChannel: "email" | "push" | "sms";
-        /** @enum {string} */
-        NotificationStatus: "pending" | "sent" | "delivered" | "failed" | "read";
-        SendNotificationRequest: {
-            /** Format: uuid */
-            customer_id: string;
-            template_name: string;
-            channel?: components["schemas"]["NotificationChannel"];
-            variables?: {
-                [key: string]: unknown;
-            };
-        };
-        SendNotificationResponse: {
-            data?: {
-                notification_id?: string;
-                status?: components["schemas"]["NotificationStatus"];
-            };
-        };
-        Notification: {
-            _id?: string;
-            /** Format: uuid */
-            customerId?: string;
-            templateId?: string;
-            channel?: components["schemas"]["NotificationChannel"];
-            status?: components["schemas"]["NotificationStatus"];
-            subject?: string;
-            body?: string;
-            metadata?: Record<string, never>;
-            /** Format: date-time */
-            sentAt?: string | null;
-            /** Format: date-time */
-            deliveredAt?: string | null;
-            /** Format: date-time */
-            readAt?: string | null;
-            failureReason?: string | null;
-            retryCount?: number;
-            /** Format: date-time */
-            createdAt?: string;
-        };
-        NotificationPreference: {
-            data?: {
-                /** Format: uuid */
-                customer_id?: string;
-                email_enabled?: boolean;
-                push_enabled?: boolean;
-                sms_enabled?: boolean;
-                quiet_hours_start?: string | null;
-                quiet_hours_end?: string | null;
-                unsubscribed_topics?: string[];
-            };
-        };
-        UpdatePreferenceRequest: {
-            email_enabled?: boolean;
-            push_enabled?: boolean;
-            sms_enabled?: boolean;
-            quiet_hours_start?: string | null;
-            quiet_hours_end?: string | null;
-        };
-        NotificationTemplate: {
-            _id?: string;
-            name?: string;
-            channel?: components["schemas"]["NotificationChannel"];
-            subject?: string;
-            bodyTemplate?: string;
-            variables?: string[];
-            isActive?: boolean;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-        };
-        CreateTemplateRequest: {
-            name: string;
-            channel: components["schemas"]["NotificationChannel"];
-            subject?: string;
-            body_template: string;
-            variables?: string[];
-        };
-        UpdateTemplateRequest: {
-            name?: string;
-            channel?: components["schemas"]["NotificationChannel"];
-            subject?: string;
-            body_template?: string;
-            variables?: string[];
-            isActive?: boolean;
-        };
+  schemas: {
+    Error: {
+      /** @example error */
+      status?: string;
+      /** @example Detailed error message */
+      message?: string;
     };
-    responses: {
-        /** @description Bad request */
-        BadRequest: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": components["schemas"]["Error"];
-            };
-        };
-        /** @description Unauthorized */
-        Unauthorized: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": components["schemas"]["Error"];
-            };
-        };
-        /** @description Forbidden */
-        Forbidden: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": components["schemas"]["Error"];
-            };
-        };
-        /** @description Not found */
-        NotFound: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": components["schemas"]["Error"];
-            };
-        };
+    /** @enum {string} */
+    NotificationChannel: 'email' | 'push' | 'sms';
+    /** @enum {string} */
+    NotificationStatus: 'pending' | 'sent' | 'delivered' | 'failed' | 'read';
+    SendNotificationRequest: {
+      /** Format: uuid */
+      customer_id: string;
+      template_name: string;
+      channel?: components['schemas']['NotificationChannel'];
+      variables?: Record<string, unknown>;
     };
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    SendNotificationResponse: {
+      data?: {
+        notification_id?: string;
+        status?: components['schemas']['NotificationStatus'];
+      };
+    };
+    Notification: {
+      _id?: string;
+      /** Format: uuid */
+      customerId?: string;
+      templateId?: string;
+      channel?: components['schemas']['NotificationChannel'];
+      status?: components['schemas']['NotificationStatus'];
+      subject?: string;
+      body?: string;
+      metadata?: Record<string, never>;
+      /** Format: date-time */
+      sentAt?: string | null;
+      /** Format: date-time */
+      deliveredAt?: string | null;
+      /** Format: date-time */
+      readAt?: string | null;
+      failureReason?: string | null;
+      retryCount?: number;
+      /** Format: date-time */
+      createdAt?: string;
+    };
+    NotificationPreference: {
+      data?: {
+        /** Format: uuid */
+        customer_id?: string;
+        email_enabled?: boolean;
+        push_enabled?: boolean;
+        sms_enabled?: boolean;
+        quiet_hours_start?: string | null;
+        quiet_hours_end?: string | null;
+        unsubscribed_topics?: string[];
+      };
+    };
+    UpdatePreferenceRequest: {
+      email_enabled?: boolean;
+      push_enabled?: boolean;
+      sms_enabled?: boolean;
+      quiet_hours_start?: string | null;
+      quiet_hours_end?: string | null;
+    };
+    NotificationTemplate: {
+      _id?: string;
+      name?: string;
+      channel?: components['schemas']['NotificationChannel'];
+      subject?: string;
+      bodyTemplate?: string;
+      variables?: string[];
+      isActive?: boolean;
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+    };
+    CreateTemplateRequest: {
+      name: string;
+      channel: components['schemas']['NotificationChannel'];
+      subject?: string;
+      body_template: string;
+      variables?: string[];
+    };
+    UpdateTemplateRequest: {
+      name?: string;
+      channel?: components['schemas']['NotificationChannel'];
+      subject?: string;
+      body_template?: string;
+      variables?: string[];
+      isActive?: boolean;
+    };
+  };
+  responses: {
+    /** @description Bad request */
+    BadRequest: {
+      headers: Record<string, unknown>;
+      content: {
+        'application/json': components['schemas']['Error'];
+      };
+    };
+    /** @description Unauthorized */
+    Unauthorized: {
+      headers: Record<string, unknown>;
+      content: {
+        'application/json': components['schemas']['Error'];
+      };
+    };
+    /** @description Forbidden */
+    Forbidden: {
+      headers: Record<string, unknown>;
+      content: {
+        'application/json': components['schemas']['Error'];
+      };
+    };
+    /** @description Not found */
+    NotFound: {
+      headers: Record<string, unknown>;
+      content: {
+        'application/json': components['schemas']['Error'];
+      };
+    };
+  };
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    sendNotification: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SendNotificationRequest"];
-            };
-        };
-        responses: {
-            /** @description Notification queued successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SendNotificationResponse"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
-        };
+  sendNotification: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    listNotifications: {
-        parameters: {
-            query?: {
-                customer_id?: string;
-                status?: components["schemas"]["NotificationStatus"];
-                channel?: components["schemas"]["NotificationChannel"];
-                page?: number;
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description A list of notifications */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data?: {
-                            notifications?: components["schemas"]["Notification"][];
-                        };
-                    };
-                };
-            };
-            401: components["responses"]["Unauthorized"];
-        };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SendNotificationRequest'];
+      };
     };
-    markAsRead: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description Notification queued successfully */
+      201: {
+        headers: Record<string, unknown>;
+        content: {
+          'application/json': components['schemas']['SendNotificationResponse'];
         };
-        requestBody?: never;
-        responses: {
-            /** @description Notification marked as read */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data?: {
-                            /** @example Marked as read. */
-                            message?: string;
-                        };
-                    };
-                };
-            };
-            404: components["responses"]["NotFound"];
-        };
+      };
+      400: components['responses']['BadRequest'];
+      401: components['responses']['Unauthorized'];
+      403: components['responses']['Forbidden'];
     };
-    getPreferences: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                customerId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description User preferences */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NotificationPreference"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-        };
+  };
+  listNotifications: {
+    parameters: {
+      query?: {
+        customer_id?: string;
+        status?: components['schemas']['NotificationStatus'];
+        channel?: components['schemas']['NotificationChannel'];
+        page?: number;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    updatePreferences: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                customerId: string;
+    requestBody?: never;
+    responses: {
+      /** @description A list of notifications */
+      200: {
+        headers: Record<string, unknown>;
+        content: {
+          'application/json': {
+            data?: {
+              notifications?: components['schemas']['Notification'][];
             };
-            cookie?: never;
+          };
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdatePreferenceRequest"];
-            };
-        };
-        responses: {
-            /** @description Updated preferences */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NotificationPreference"];
-                };
-            };
-        };
+      };
+      401: components['responses']['Unauthorized'];
     };
-    listTemplates: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description A list of templates */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data?: {
-                            templates?: components["schemas"]["NotificationTemplate"][];
-                        };
-                    };
-                };
-            };
-        };
+  };
+  markAsRead: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    createTemplate: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateTemplateRequest"];
+    requestBody?: never;
+    responses: {
+      /** @description Notification marked as read */
+      200: {
+        headers: Record<string, unknown>;
+        content: {
+          'application/json': {
+            data?: {
+              /** @example Marked as read. */
+              message?: string;
             };
+          };
         };
-        responses: {
-            /** @description Template created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NotificationTemplate"];
-                };
-            };
-        };
+      };
+      404: components['responses']['NotFound'];
     };
-    updateTemplate: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateTemplateRequest"];
-            };
-        };
-        responses: {
-            /** @description Template updated */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NotificationTemplate"];
-                };
-            };
-        };
+  };
+  getPreferences: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        customerId: string;
+      };
+      cookie?: never;
     };
-    deleteTemplate: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description User preferences */
+      200: {
+        headers: Record<string, unknown>;
+        content: {
+          'application/json': components['schemas']['NotificationPreference'];
         };
-        requestBody?: never;
-        responses: {
-            /** @description Template deleted */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example Deleted */
-                        message?: string;
-                    };
-                };
-            };
-        };
+      };
+      404: components['responses']['NotFound'];
     };
+  };
+  updatePreferences: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        customerId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePreferenceRequest'];
+      };
+    };
+    responses: {
+      /** @description Updated preferences */
+      200: {
+        headers: Record<string, unknown>;
+        content: {
+          'application/json': components['schemas']['NotificationPreference'];
+        };
+      };
+    };
+  };
+  listTemplates: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description A list of templates */
+      200: {
+        headers: Record<string, unknown>;
+        content: {
+          'application/json': {
+            data?: {
+              templates?: components['schemas']['NotificationTemplate'][];
+            };
+          };
+        };
+      };
+    };
+  };
+  createTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateTemplateRequest'];
+      };
+    };
+    responses: {
+      /** @description Template created */
+      201: {
+        headers: Record<string, unknown>;
+        content: {
+          'application/json': components['schemas']['NotificationTemplate'];
+        };
+      };
+    };
+  };
+  updateTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateTemplateRequest'];
+      };
+    };
+    responses: {
+      /** @description Template updated */
+      200: {
+        headers: Record<string, unknown>;
+        content: {
+          'application/json': components['schemas']['NotificationTemplate'];
+        };
+      };
+    };
+  };
+  deleteTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Template deleted */
+      200: {
+        headers: Record<string, unknown>;
+        content: {
+          'application/json': {
+            /** @example Deleted */
+            message?: string;
+          };
+        };
+      };
+    };
+  };
 }
