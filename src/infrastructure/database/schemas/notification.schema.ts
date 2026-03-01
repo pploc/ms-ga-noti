@@ -34,7 +34,7 @@ const NotificationSchema = new Schema<NotificationDocument>(
   {
     timestamps: true,
     toObject: {
-      transform: (_, ret: any) => {
+      transform: (_: any, ret: any): void => {
         ret.id = ret._id.toString();
         delete ret._id;
         delete ret.__v;
@@ -44,6 +44,9 @@ const NotificationSchema = new Schema<NotificationDocument>(
 );
 
 NotificationSchema.index({ customerId: 1, createdAt: -1 });
+NotificationSchema.virtual('id').get(function (this: any): string {
+  return this._id.toString();
+});
 NotificationSchema.index({ status: 1, createdAt: -1 });
 
 export const NotificationModel = model<NotificationDocument>('Notification', NotificationSchema);

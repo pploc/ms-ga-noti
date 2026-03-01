@@ -6,17 +6,18 @@ import { requireAuth } from '../middlewares/auth.middleware';
 import { asyncHandler } from '../middlewares/async.middleware';
 
 const router = Router();
-const getPrefController = () => container.get<PreferenceController>(TYPES.PreferenceController);
+const getPrefController = (): PreferenceController =>
+  container.get<PreferenceController>(TYPES.PreferenceController);
 
 router.get(
-    '/me',
-    requireAuth,
-    asyncHandler((req, res) => getPrefController().getMyPreferences(req, res)),
+  '/me',
+  requireAuth,
+  asyncHandler((req, res) => getPrefController().getMyPreferences(req, res)),
 );
 router.put(
-    '/me',
-    requireAuth,
-    asyncHandler((req, res) => getPrefController().updateMyPreferences(req, res)),
+  '/me',
+  requireAuth,
+  asyncHandler((req, res) => getPrefController().updateMyPreferences(req, res)),
 );
 
 export default router;
