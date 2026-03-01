@@ -9,7 +9,7 @@
 - Exposes REST API at `POST /gymapi/v1/notifications` (port 8091)
 - Stores data in MongoDB (`noti_db`)
 
-This plan covers **project initialization + git push**. Feature implementation (domain, infrastructure, application, API, workers) will be delivered in subsequent steps once the project is live.
+This plan covers **project initialization + git push**. Feature implementation follows an **API-First** approach using OpenAPI (Swagger).
 
 ---
 
@@ -19,9 +19,12 @@ This plan covers **project initialization + git push**. Feature implementation (
 
 #### [NEW] `package.json`
 - `name: ms-ga-noti`, `version: 1.0.0`
-- **Runtime deps**: `express`, `mongoose`, `kafkajs`, `amqplib`, `handlebars`, `winston`, `dotenv`, `cors`, `helmet`, `uuid`
-- **Dev deps**: `typescript`, `ts-node-dev`, `@types/*`, `jest`, `ts-jest`, `supertest`, `@types/supertest`
-- Scripts: `dev`, `build`, `start`, `test`, `lint`
+- **Runtime deps**: `express`, `mongoose`, `kafkajs`, `amqplib`, `handlebars`, `winston`, `dotenv`, `cors`, `helmet`, `uuid`, `reflect-metadata`, `inversify`
+- **Dev deps**: `typescript`, `ts-node-dev`, `@types/*`, `jest`, `ts-jest`, `supertest`, `@types/supertest`, `prettier`, `eslint-config-prettier`, `eslint-plugin-prettier`, `openapi-typescript`
+- Scripts: `dev`, `build`, `start`, `test`, `lint`, `format`, `codegen`
+
+#### [NEW] `openapi/swagger.yaml`
+- OpenAPI 3.0 specification for all notification, preference, and template endpoints.
 
 #### [NEW] `tsconfig.json`
 - `target: ES2022`, `module: commonjs`, `strict: true`, `outDir: ./dist`, `rootDir: ./src`
@@ -99,7 +102,8 @@ Quick-start: clone, `cp .env.example .env`, `docker-compose up`, endpoints list.
 
 | Phase | Scope |
 |-------|-------|
-| 3 | Domain entities + repository interfaces |
+| 0 | API-First Design: OpenAPI (Swagger) spec + CodeGen for types |
+| 3 | Domain entities + repository interfaces (using generated types) |
 | 4 | MongoDB schemas + repository impls + Kafka consumer + RabbitMQ publisher |
 | 5 | Application services + event handlers (identity, booking, payment, membership, customer, trainer) |
 | 6 | REST API controllers, routes, auth middleware, permission middleware |

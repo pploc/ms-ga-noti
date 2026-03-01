@@ -1,0 +1,482 @@
+openapi: 3.0.3
+info:
+  title: ms-ga-noti - Notification Service
+  description: Notification orchestration hub for GymAPI. Consumes events and dispatches notifications via multiple channels.
+  version: 1.0.0
+servers:
+  - url: /gymapi/v1/notifications
+    description: Local development
+
+tags:
+  - name: Notifications
+    description: Send and track notifications
+  - name: Preferences
+    description: Manage user notification preferences
+  - name: Templates
+    description: Manage notification templates
+
+paths:
+  /send:
+    post:
+      tags:
+        - Notifications
+      summary: Send a notification
+      description: Manually trigger a notification to a specific customer using a template.
+      operationId: sendNotification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendNotificationRequest"
+      responses:
+        "201":
+          description: Notification queued successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SendNotificationResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /:
+    get:
+      tags:
+        - Notifications
+      summary: List notifications
+      description: Get a paginated list of notifications, filterable by customer, status, or channel.
+      operationId: listNotifications
+      parameters:
+        - name: customer_id
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/NotificationStatus"
+        - name: channel
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/NotificationChannel"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: A list of notifications
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      notifications:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Notification"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /{id}/read:
+    put:
+      tags:
+        - Notifications
+      summary: Mark notification as read
+      operationId: markAsRead
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Notification marked as read
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Marked as read."
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /preferences/{customerId}:
+    get:
+      tags:
+        - Preferences
+      summary: Get user preferences
+      operationId: getPreferences
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: User preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationPreference"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - Preferences
+      summary: Update user preferences
+      operationId: updatePreferences
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePreferenceRequest"
+      responses:
+        "200":
+          description: Updated preferences
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationPreference"
+
+  /templates:
+    get:
+      tags:
+        - Templates
+      summary: List templates
+      operationId: listTemplates
+      responses:
+        "200":
+          description: A list of templates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      templates:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/NotificationTemplate"
+    post:
+      tags:
+        - Templates
+      summary: Create template
+      operationId: createTemplate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTemplateRequest"
+      responses:
+        "201":
+          description: Template created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationTemplate"
+
+  /templates/{id}:
+    put:
+      tags:
+        - Templates
+      summary: Update template
+      operationId: updateTemplate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTemplateRequest"
+      responses:
+        "200":
+          description: Template updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationTemplate"
+    delete:
+      tags:
+        - Templates
+      summary: Delete template
+      operationId: deleteTemplate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Template deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Deleted"
+
+components:
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "error"
+        message:
+          type: string
+          example: "Detailed error message"
+
+    NotificationChannel:
+      type: string
+      enum: [email, push, sms]
+
+    NotificationStatus:
+      type: string
+      enum: [pending, sent, delivered, failed, read]
+
+    SendNotificationRequest:
+      type: object
+      required:
+        - customer_id
+        - template_name
+      properties:
+        customer_id:
+          type: string
+          format: uuid
+        template_name:
+          type: string
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        variables:
+          type: object
+          additionalProperties: true
+
+    SendNotificationResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            notification_id:
+              type: string
+            status:
+              $ref: "#/components/schemas/NotificationStatus"
+
+    Notification:
+      type: object
+      properties:
+        _id:
+          type: string
+        customerId:
+          type: string
+          format: uuid
+        templateId:
+          type: string
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        status:
+          $ref: "#/components/schemas/NotificationStatus"
+        subject:
+          type: string
+        body:
+          type: string
+        metadata:
+          type: object
+        sentAt:
+          type: string
+          format: date-time
+          nullable: true
+        deliveredAt:
+          type: string
+          format: date-time
+          nullable: true
+        readAt:
+          type: string
+          format: date-time
+          nullable: true
+        failureReason:
+          type: string
+          nullable: true
+        retryCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    NotificationPreference:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            customer_id:
+              type: string
+              format: uuid
+            email_enabled:
+              type: boolean
+            push_enabled:
+              type: boolean
+            sms_enabled:
+              type: boolean
+            quiet_hours_start:
+              type: string
+              nullable: true
+            quiet_hours_end:
+              type: string
+              nullable: true
+            unsubscribed_topics:
+              type: array
+              items:
+                type: string
+
+    UpdatePreferenceRequest:
+      type: object
+      properties:
+        email_enabled:
+          type: boolean
+        push_enabled:
+          type: boolean
+        sms_enabled:
+          type: boolean
+        quiet_hours_start:
+          type: string
+          nullable: true
+        quiet_hours_end:
+          type: string
+          nullable: true
+
+    NotificationTemplate:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        subject:
+          type: string
+        bodyTemplate:
+          type: string
+        variables:
+          type: array
+          items:
+            type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateTemplateRequest:
+      type: object
+      required:
+        - name
+        - channel
+        - body_template
+      properties:
+        name:
+          type: string
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        subject:
+          type: string
+        body_template:
+          type: string
+        variables:
+          type: array
+          items:
+            type: string
+
+    UpdateTemplateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        channel:
+          $ref: "#/components/schemas/NotificationChannel"
+        subject:
+          type: string
+        body_template:
+          type: string
+        variables:
+          type: array
+          items:
+            type: string
+        isActive:
+          type: boolean
