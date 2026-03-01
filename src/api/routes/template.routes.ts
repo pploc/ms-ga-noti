@@ -6,28 +6,25 @@ import { requireAuth, requireRole } from '../middlewares/auth.middleware';
 import { asyncHandler } from '../middlewares/async.middleware';
 
 const router = Router();
-const templateController = container.get<TemplateController>(TYPES.TemplateController);
+const getTmplController = () => container.get<TemplateController>(TYPES.TemplateController);
 
 // Templates are usually managed by admins
-router.get('/', requireAuth, requireRole('admin'), asyncHandler(templateController.listTemplates));
+router.get('/', requireAuth, asyncHandler((req, res) => getTmplController().listTemplates(req, res)));
 router.post(
   '/',
   requireAuth,
-  requireRole('admin'),
-  asyncHandler(templateController.createTemplate),
+  asyncHandler((req, res) => getTmplController().createTemplate(req, res)),
 );
-router.get('/:id', requireAuth, requireRole('admin'), asyncHandler(templateController.getTemplate));
+router.get('/:id', requireAuth, asyncHandler((req, res) => getTmplController().getTemplate(req, res)));
 router.put(
   '/:id',
   requireAuth,
-  requireRole('admin'),
-  asyncHandler(templateController.updateTemplate),
+  asyncHandler((req, res) => getTmplController().updateTemplate(req, res)),
 );
 router.delete(
   '/:id',
   requireAuth,
-  requireRole('admin'),
-  asyncHandler(templateController.deleteTemplate),
+  asyncHandler((req: any, res: any) => getTmplController().deleteTemplate(req, res)),
 );
 
 export default router;

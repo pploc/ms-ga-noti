@@ -6,13 +6,17 @@ import { requireAuth } from '../middlewares/auth.middleware';
 import { asyncHandler } from '../middlewares/async.middleware';
 
 const router = Router();
-const notiController = container.get<NotificationController>(TYPES.NotificationController);
+const getNotiController = () => container.get<NotificationController>(TYPES.NotificationController);
 
 // Depending on architecture, internal microservices might post notifications without user auth
 // but we'll secure it generally. Maybe internal service token pattern applies.
-router.post('/', requireAuth, asyncHandler(notiController.sendNotification));
+router.post('/', requireAuth, asyncHandler((req, res) => getNotiController().sendNotification(req, res)));
 
-router.get('/', requireAuth, asyncHandler(notiController.listNotifications));
-router.post('/:notificationId/read', requireAuth, asyncHandler(notiController.markAsRead));
+router.get('/', requireAuth, asyncHandler((req, res) => getNotiController().listNotifications(req, res)));
+router.post(
+    '/:notificationId/read',
+    requireAuth,
+    asyncHandler((req, res) => getNotiController().markAsRead(req, res)),
+);
 
 export default router;
