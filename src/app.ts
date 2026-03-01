@@ -2,8 +2,9 @@ import express, { type Request, type Response, type NextFunction } from 'express
 import helmet from 'helmet';
 import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
-import { AppError } from './shared/errors';
 import { logger } from './shared/logger';
+import apiRoutes from './api/routes';
+import { errorHandler } from './api/middlewares/error.middleware';
 
 export function createApp(): express.Application {
   const app = express();
@@ -34,8 +35,8 @@ export function createApp(): express.Application {
     res.status(200).json({ status: 'ok', service: 'ms-ga-noti' });
   });
 
-  // ── API routes (placeholder — populated per feature) ─────────────────────
-  // app.use('/gymapi/v1/notifications', notificationRouter);
+  // ── API routes ───────────────────────────────────────────────────────────
+  app.use('/gymapi/v1', apiRoutes);
 
   // ── 404 handler ───────────────────────────────────────────────────────────
   app.use((_req: Request, res: Response): void => {
@@ -43,16 +44,7 @@ export function createApp(): express.Application {
   });
 
   // ── Global error handler ──────────────────────────────────────────────────
-  app.use((err: unknown, _req: Request, res: Response, _next: NextFunction): void => {
-    if (err instanceof AppError) {
-      logger.warn('Operational error', { message: err.message, statusCode: err.statusCode });
-      res.status(err.statusCode).json({ status: 'error', message: err.message });
-      return;
-    }
-
-    logger.error('Unexpected error', { error: err });
-    res.status(500).json({ status: 'error', message: 'Internal server error' });
-  });
+  app.use(errorHandler);
 
   return app;
 }

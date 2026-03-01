@@ -15,4 +15,9 @@ export const TYPES = {
   TemplateService: Symbol.for('TemplateService'),
   PreferenceService: Symbol.for('PreferenceService'),
   KafkaEventHandler: Symbol.for('KafkaEventHandler'),
+
+  // API Controllers
+  NotificationController: Symbol.for('NotificationController'),
+  TemplateController: Symbol.for('TemplateController'),
+  PreferenceController: Symbol.for('PreferenceController'),
 };

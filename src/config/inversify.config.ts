@@ -19,6 +19,11 @@ import { TemplateService } from '../application/services/template.service';
 import { PreferenceService } from '../application/services/preference.service';
 import { KafkaEventHandler } from '../application/events/kafka.handler';
 
+// API Controllers
+import { NotificationController } from '../api/controllers/notification.controller';
+import { TemplateController } from '../api/controllers/template.controller';
+import { PreferenceController } from '../api/controllers/preference.controller';
+
 const container = new Container();
 
 // ── Bind Shared ─────────────────────────────────────────────────────────────
@@ -47,5 +52,10 @@ container.bind(TYPES.NotificationService).to(NotificationService).inSingletonSco
 container.bind(TYPES.TemplateService).to(TemplateService).inSingletonScope();
 container.bind(TYPES.PreferenceService).to(PreferenceService).inSingletonScope();
 container.bind(TYPES.KafkaEventHandler).to(KafkaEventHandler).inSingletonScope();
+
+// ── Bind API Controllers ────────────────────────────────────────────────────
+container.bind(TYPES.NotificationController).to(NotificationController).inSingletonScope();
+container.bind(TYPES.TemplateController).to(TemplateController).inSingletonScope();
+container.bind(TYPES.PreferenceController).to(PreferenceController).inSingletonScope();
 
 export { container };
